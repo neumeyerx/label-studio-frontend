@@ -171,7 +171,7 @@ const HtxNumber = inject('store')(
       <div className='lsf-number' style={visibleStyle}>
         {item.slider && 
         <div style={sliderContainerStyle}>
-          <output style={outputStyle}>{item.number ?? item.defaultvalue ?? ''}</output>
+          <output style={outputStyle}>{item.number !== null ? item.number : 'Bitte Slider bewegen!'}</output>
           <input
             disabled={disabled}
             style={sliderStyle}
@@ -204,6 +204,7 @@ const HtxNumber = inject('store')(
     );
   }),
 );
+
 
 
 Registry.addTag('number', NumberModel, HtxNumber);
