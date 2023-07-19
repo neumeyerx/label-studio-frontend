@@ -161,16 +161,34 @@ const NumberModel = types.compose('NumberModel',
 
 const HtxNumber = inject('store')(
   observer(({ item, store }) => {
-    const visibleStyle = item.perRegionVisible() ? { display: 'flex', alignItems: 'center' } : { display: 'none' };
-    const sliderStyle = item.slider ? { padding: '9px 0px', border: 0 } : {};
+    const visibleStyle = item.perRegionVisible() ? { display: 'flex', alignItems: 'center', flexDirection: 'column' } : { display: 'none' };
+    const sliderStyle = item.slider ? { padding: '0px 0px', border: 0, width: '100%'} : {};
+    const outputStyle = { fontSize: '18px', marginBottom: '5px' };
+    const sliderContainerStyle = item.slider ? { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '76%', marginLeft: '12%', marginRight: '12%', marginTop: '5%'} : {};
     const disabled = item.isReadOnly();
 
     return (
       <div className='lsf-number' style={visibleStyle}>
+        {item.slider && 
+        <div style={sliderContainerStyle}>
+          <output style={outputStyle}>{item.number ?? item.defaultvalue ?? ''}</output>
+          <input
+            disabled={disabled}
+            style={sliderStyle}
+            type='range'
+            name={item.name}
+            value={item.number ?? item.defaultvalue ?? ''}
+            step={item.step ?? 1}
+            min={isDefined(item.min) ? Number(item.min) : undefined}
+            max={isDefined(item.max) ? Number(item.max) : undefined}
+            onChange={disabled ? undefined : item.onChange}
+          />
+        </div>
+        }
+        {!item.slider && 
         <input
           disabled={disabled}
-          style={sliderStyle}
-          type={item.slider ? 'range' : 'number'}
+          type='number'
           name={item.name}
           value={item.number ?? item.defaultvalue ?? ''}
           step={item.step ?? 1}
@@ -178,7 +196,7 @@ const HtxNumber = inject('store')(
           max={isDefined(item.max) ? Number(item.max) : undefined}
           onChange={disabled ? undefined : item.onChange}
         />
-        {item.slider && <output style={{ marginLeft: '5px' }}>{item.number ?? item.defaultvalue ?? ''}</output>}
+        }
         {store.settings.enableTooltips && store.settings.enableHotkeys && item.hotkey && (
           <sup style={{ fontSize: '9px' }}>[{item.hotkey}]</sup>
         )}
@@ -186,6 +204,7 @@ const HtxNumber = inject('store')(
     );
   }),
 );
+
 
 Registry.addTag('number', NumberModel, HtxNumber);
 
